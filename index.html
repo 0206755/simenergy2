@@ -12,21 +12,7 @@
 
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-	  <script>
-		  function allowDrop(ev) {
-			  ev.preventDefault();
-		  }
 
-		  function drag(ev) {
-			  ev.dataTransfer.setData("text", ev.target.id);
-		  }
-
-		  function drop(ev) {
-			  ev.preventDefault();
-			  var data = ev.dataTransfer.getData("text");
-			  ev.target.appendChild(document.getElementById(data));
-		  }
-	  </script>
 
   </head>
   <body>
@@ -143,8 +129,41 @@
 								</div>
 
 							</nav>
-						<div class="jumbotron" style="min-height:600px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+						<div class="jumbotron" style="min-height:600px;">
+							<article>
+								<div id="holder"></div>
+						<p id="status">File API &amp; FileReader API not supported</p>
+						<p>Drag an image from your desktop on to the drop zone above to see the browser read the contents of the file and use it as the background - without uploading the file to any servers.</p>
+						</article>
+						script>
+						var holder = document.getElementById('holder'),
+						state = document.getElementById('status');
 
+						if (typeof window.FileReader === 'undefined') {
+						state.className = 'fail';
+						} else {
+						state.className = 'success';
+						state.innerHTML = 'File API & FileReader available';
+						}
+
+						holder.ondragover = function () { this.className = 'hover'; return false; };
+						holder.ondragend = function () { this.className = ''; return false; };
+						holder.ondrop = function (e) {
+						this.className = '';
+						e.preventDefault();
+
+						var file = e.dataTransfer.files[0],
+						reader = new FileReader();
+						reader.onload = function (event) {
+						console.log(event.target);
+						holder.style.background = 'url(' + event.target.result + ') no-repeat center';
+						};
+						console.log(file);
+						reader.readAsDataURL(file);
+
+						return false;
+						};
+						</script>
 						</div>
 						<form class="navbar-form navbar-right" role="search">
 
