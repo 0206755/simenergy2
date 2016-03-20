@@ -130,17 +130,38 @@
 
 							</nav>
 						<div class="jumbotron" style="min-height:600px;">
-						<p class="normal-text">It's quite feasable to use html5 and jquery to create a web-based app for the Oil Sim add-on requirements. If the Oil Sim add-ons are web-based, anyone can access this on
-						any device, on any browser, while working on Oil Sim.</p>
-						<h2>Resources for functions</h2>
-						<ul>
-							<li>File functions - open, save file, drag and drop - <a href="http://www.html5rocks.com/en/tutorials/file/dndfiles/" target="_blank">http://www.html5rocks.com/en/tutorials/file/dndfiles/</a></li>
-                            <li>Plotting stuff on graphs, charts etc.... <a href="http://www.jqplot.com/" target="_blank">http://www.jqplot.com/</a></li>
-							<li>Using html5 canvas to create, edit, open and export images <a href="http://www.html5rocks.com/en/tutorials/canvas/integrating/" target="_blank">http://www.html5rocks.com/en/tutorials/canvas/integrating/</a>  </li>
-							<li>Create layers (for seismic data) <a href="http://www.ibm.com/developerworks/library/wa-canvashtml5layering/" target="_blank">http://www.ibm.com/developerworks/library/wa-canvashtml5layering/</a></li>
-							<li>Draw on html canvas with mouse example <a href="http://jsfiddle.net/URWru/" target="_blank">http://jsfiddle.net/URWru/</a></li>
-							<li>Paste example onto html5 canvas <a href="http://jsfiddle.net/KJW4E/754/" target="_blank">http://jsfiddle.net/KJW4E/754/</a></li>
- 						</ul>
+						<div id="drop_zone">Drop files here</div>
+						<output id="list"></output>
+
+						<script>
+							function handleFileSelect(evt) {
+								evt.stopPropagation();
+								evt.preventDefault();
+
+								var files = evt.dataTransfer.files; // FileList object.
+
+								// files is a FileList of File objects. List some properties.
+								var output = [];
+								for (var i = 0, f; f = files[i]; i++) {
+									output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+											f.size, ' bytes, last modified: ',
+											f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+											'</li>');
+								}
+								document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+							}
+
+							function handleDragOver(evt) {
+								evt.stopPropagation();
+								evt.preventDefault();
+								evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+							}
+
+							// Setup the dnd listeners.
+							var dropZone = document.getElementById('drop_zone');
+							dropZone.addEventListener('dragover', handleDragOver, false);
+							dropZone.addEventListener('drop', handleFileSelect, false);
+						</script>
 						</div>
 						<form class="navbar-form navbar-right" role="search">
 
